@@ -73,8 +73,6 @@
       background-image: 
         radial-gradient(circle at center, rgba(0, 0, 0, 0.035) 1.5px, transparent 1.5px);
       background-size: 38px 38px;
-      mask-image: radial-gradient(circle at center, black 35%, transparent 80%);
-      -webkit-mask-image: radial-gradient(circle at center, black 35%, transparent 80%);
       z-index: 2;
       pointer-events: none;
       opacity: 0.65;
@@ -96,7 +94,6 @@
       z-index: 3;
       transition: opacity 0.4s ease;
       opacity: 0;
-      mix-blend-mode: overlay;
     }
 
     /* Lienzo interactivo de micropartículas */
@@ -137,7 +134,6 @@
       height: clamp(550px, 65vw, 1050px);
       border-radius: 50%;
       background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(230, 235, 245, 0.5) 45%, transparent 70%);
-      animation: breatheGlow 7.5s ease-in-out infinite alternate;
       pointer-events: none;
       z-index: -1;
     }
@@ -183,14 +179,12 @@
       height: 100%;
       border: 1.5px solid rgba(0, 0, 0, 0.04);
       border-left-color: rgba(0, 0, 0, 0.12);
-      animation: rotateRing 65s linear infinite;
     }
 
     .ring-middle {
       width: 78%;
       height: 78%;
       border: 1.5px dashed rgba(0, 0, 0, 0.05);
-      animation: rotateRingRev 48s linear infinite;
     }
 
     .ring-inner {
@@ -199,7 +193,6 @@
       border: 1.5px solid rgba(0, 0, 0, 0.03);
       border-top-color: rgba(0, 0, 0, 0.16);
       border-bottom-color: rgba(0, 0, 0, 0.07);
-      animation: rotateRing 28s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
 
     @keyframes rotateRing {
@@ -217,15 +210,12 @@
        ======================================================== */
     .glass-capsule {
       position: relative;
-      background: rgba(255, 255, 255, 0.88);
-      background: var(--surface-glass);
+      background: rgba(255, 255, 255, 0.92);
       border: 1.5px solid rgba(255, 255, 255, 0.95);
       border-radius: 4vw;
       border-radius: clamp(32px, 4vw, 56px);
       padding: 5.5vw 8vw;
       padding: clamp(3.2rem, 5.5vw, 6.5rem) clamp(4.5rem, 8vw, 10rem);
-      backdrop-filter: blur(36px) saturate(140%);
-      -webkit-backdrop-filter: blur(36px) saturate(140%);
       box-shadow: 
         0 25px 70px rgba(0, 0, 0, 0.06),
         0 8px 24px rgba(0, 0, 0, 0.03),
@@ -271,21 +261,7 @@
     /* Shimmer metálico en grafito profundo y carbón */
     .word {
       display: inline-flex;
-      color: #2d2d34;
-      background: linear-gradient(
-        110deg,
-        #0e0e11 0%,
-        #2d2d34 20%,
-        #71717a 38%,
-        #a1a1aa 50%,
-        #71717a 62%,
-        #2d2d34 80%,
-        #0e0e11 100%
-      );
-      background-size: 240% 100%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: metallicShimmer 6.2s linear infinite;
+      color: #1c1c21;
     }
 
     @keyframes metallicShimmer {
@@ -296,9 +272,6 @@
     /* Ondulación muy suave en las letras */
     .char {
       display: inline-block;
-      animation: charSway 3.8s ease-in-out infinite;
-      animation-delay: calc(var(--i) * 0.08s);
-      transition: transform 0.25s ease;
     }
 
     @keyframes charSway {
@@ -332,7 +305,6 @@
       margin-right: 1.4vw;
       border-radius: 50%;
       background: radial-gradient(circle at 35% 35%, #52525b 0%, #27272a 45%, #0e0e11 100%);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
       animation: smoothWave 1.65s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
       animation-delay: calc(var(--d) * 0.22s);
       will-change: transform, opacity;
@@ -340,16 +312,6 @@
 
     .fluid-dot:last-child { margin-right: 0; }
 
-    /* Retardos sin variables CSS (navegadores antiguos de TV) */
-    .char:nth-child(1) { animation-delay: 0s; }
-    .char:nth-child(2) { animation-delay: 0.08s; }
-    .char:nth-child(3) { animation-delay: 0.16s; }
-    .char:nth-child(4) { animation-delay: 0.24s; }
-    .char:nth-child(5) { animation-delay: 0.32s; }
-    .char:nth-child(6) { animation-delay: 0.4s; }
-    .char:nth-child(7) { animation-delay: 0.48s; }
-    .char:nth-child(8) { animation-delay: 0.56s; }
-    .char:nth-child(9) { animation-delay: 0.64s; }
     .fluid-dot:nth-child(1) { animation-delay: 0s; }
     .fluid-dot:nth-child(2) { animation-delay: 0.22s; }
     .fluid-dot:nth-child(3) { animation-delay: 0.44s; }
@@ -359,14 +321,10 @@
       0%, 100% {
         transform: translateY(0px) scale(0.86);
         opacity: 0.35;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
       50% {
         transform: translateY(-14px) scale(1.16);
         opacity: 1;
-        box-shadow: 
-          0 12px 24px rgba(0, 0, 0, 0.22),
-          0 4px 8px rgba(0, 0, 0, 0.12);
       }
     }
 
@@ -547,7 +505,7 @@
 
       // Menos partículas: las TV tienen CPU/GPU modestas
       var particles = [];
-      for (var n = 0; n < 40; n++) particles.push(new DustParticle());
+      for (var n = 0; n < 18; n++) particles.push(new DustParticle());
       var waves = [];
       var mouse = { x: null, y: null };
       var spotlightX = width / 2;
@@ -602,23 +560,6 @@
         }
 
         ctx.clearRect(0, 0, width, height);
-
-        // Conexiones suaves entre partículas
-        for (var i = 0; i < particles.length; i++) {
-          for (var j = i + 1; j < particles.length; j++) {
-            var dx = particles[i].x - particles[j].x;
-            var dy = particles[i].y - particles[j].y;
-            var dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 110) {
-              ctx.beginPath();
-              ctx.moveTo(particles[i].x, particles[i].y);
-              ctx.lineTo(particles[j].x, particles[j].y);
-              ctx.strokeStyle = 'rgba(60, 65, 75, ' + ((1 - dist / 110) * 0.035) + ')';
-              ctx.lineWidth = 0.6;
-              ctx.stroke();
-            }
-          }
-        }
 
         for (var p = 0; p < particles.length; p++) {
           particles[p].update(mouse);
