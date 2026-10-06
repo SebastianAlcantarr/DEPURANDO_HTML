@@ -365,6 +365,65 @@
     @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
       .glass-capsule { background: rgba(255, 255, 255, 0.92); }
     }
+
+    /* Bicho volando por el fondo (solo transform: ligero para TV) */
+    .bug-fly {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 9vw;
+      min-width: 90px;
+      max-width: 190px;
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0.55;
+      -webkit-animation: bugPath 46s linear infinite;
+      animation: bugPath 46s linear infinite;
+    }
+    .bug-fly img {
+      display: block;
+      width: 100%;
+      height: auto;
+      -webkit-animation: bugBob 0.7s ease-in-out infinite alternate;
+      animation: bugBob 0.7s ease-in-out infinite alternate;
+    }
+    @-webkit-keyframes bugBob { from { -webkit-transform: translateY(-7px) rotate(-4deg); } to { -webkit-transform: translateY(7px) rotate(4deg); } }
+    @keyframes bugBob { from { transform: translateY(-7px) rotate(-4deg); } to { transform: translateY(7px) rotate(4deg); } }
+    @-webkit-keyframes bugPath {
+      0%   { -webkit-transform: translate(-15vw, 68vh) scaleX(1); }
+      20%  { -webkit-transform: translate(30vw, 14vh) scaleX(1); }
+      39%  { -webkit-transform: translate(75vw, 55vh) scaleX(1); }
+      49%  { -webkit-transform: translate(108vw, 30vh) scaleX(1); }
+      51%  { -webkit-transform: translate(108vw, 30vh) scaleX(-1); }
+      70%  { -webkit-transform: translate(55vw, 72vh) scaleX(-1); }
+      88%  { -webkit-transform: translate(12vw, 20vh) scaleX(-1); }
+      99%  { -webkit-transform: translate(-15vw, 45vh) scaleX(-1); }
+      100% { -webkit-transform: translate(-15vw, 68vh) scaleX(1); }
+    }
+    @keyframes bugPath {
+      0%   { transform: translate(-15vw, 68vh) scaleX(1); }
+      20%  { transform: translate(30vw, 14vh) scaleX(1); }
+      39%  { transform: translate(75vw, 55vh) scaleX(1); }
+      49%  { transform: translate(108vw, 30vh) scaleX(1); }
+      51%  { transform: translate(108vw, 30vh) scaleX(-1); }
+      70%  { transform: translate(55vw, 72vh) scaleX(-1); }
+      88%  { transform: translate(12vw, 20vh) scaleX(-1); }
+      99%  { transform: translate(-15vw, 45vh) scaleX(-1); }
+      100% { transform: translate(-15vw, 68vh) scaleX(1); }
+    }
+
+    /* Logo Unison arriba a la derecha */
+    .logo-unison {
+      position: absolute;
+      top: 3vh;
+      right: 3vw;
+      width: 7vw;
+      min-width: 70px;
+      max-width: 150px;
+      height: auto;
+      z-index: 20;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -376,6 +435,9 @@
 
   <!-- Lienzo interactivo para micropartículas -->
   <canvas id="particle-canvas"></canvas>
+
+  <img class="logo-unison" src="unison.png" alt="Universidad de Sonora">
+  <div class="bug-fly"><img src="bicho.png" alt=""></div>
 
   <!-- Escenario central -->
   <main class="stage">
