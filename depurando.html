@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Depurando . . .</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ========================================================
+       VARIABLES: PALETA MODO CLARO MINIMALISTA (BLANCOS Y GRISES)
+       ======================================================== */
+    :root {
+      --bg: #f6f7fa;
+      --surface-glass: rgba(255, 255, 255, 0.72);
+      --surface-border: rgba(255, 255, 255, 0.95);
+      --surface-subtle-stroke: rgba(0, 0, 0, 0.05);
+
+      --charcoal-900: #0e0e11;
+      --charcoal-800: #1c1c21;
+      --charcoal-700: #2d2d34;
+      --silver-500: #71717a;
+      --silver-400: #a1a1aa;
+      --silver-300: #d4d4d8;
+      --silver-100: #f4f4f6;
+
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg);
+      font-family: var(--font-sans);
+      color: var(--charcoal-900);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Fondo: Gradiente radial limpio y microcuadrícula sutil */
+    .bg-gradient {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f4f5f8 55%, #eaecf1 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .bg-noise-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        radial-gradient(circle at center, rgba(0, 0, 0, 0.035) 1.5px, transparent 1.5px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(circle at center, black 35%, transparent 80%);
+      -webkit-mask-image: radial-gradient(circle at center, black 35%, transparent 80%);
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0.65;
+    }
+
+    /* Foco interactivo suave de luz translúcida */
+    #cursor-spotlight {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: clamp(600px, 60vw, 1100px);
+      height: clamp(600px, 60vw, 1100px);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.3) 40%, transparent 70%);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 3;
+      transition: opacity 0.4s ease;
+      opacity: 0;
+      mix-blend-mode: overlay;
+    }
+
+    /* Lienzo interactivo de micropartículas */
+    #particle-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 4;
+      pointer-events: auto;
+    }
+
+    /* ========================================================
+       ESCENARIO CENTRAL ESCALADO PARA GRAN FORMATO / TV
+       ======================================================== */
+    .stage {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      width: 100%;
+      max-width: 1600px;
+    }
+
+    /* Halo luminoso orgánico blanco suave */
+    .central-glow {
+      position: absolute;
+      width: clamp(550px, 65vw, 1050px);
+      height: clamp(550px, 65vw, 1050px);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(230, 235, 245, 0.5) 45%, transparent 70%);
+      filter: blur(85px);
+      animation: breatheGlow 7.5s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    @keyframes breatheGlow {
+      0% {
+        transform: scale(0.9);
+        opacity: 0.6;
+      }
+      50% {
+        transform: scale(1.15);
+        opacity: 0.9;
+      }
+      100% {
+        transform: scale(0.95);
+        opacity: 0.65;
+      }
+    }
+
+    /* Anillos hairline monocromáticos en tonos grafito tenue */
+    .rings-container {
+      position: absolute;
+      width: clamp(560px, 75vw, 1150px);
+      height: clamp(560px, 75vw, 1150px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .hairline-ring {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .ring-outer {
+      width: 100%;
+      height: 100%;
+      border: 1.5px solid rgba(0, 0, 0, 0.04);
+      border-left-color: rgba(0, 0, 0, 0.12);
+      animation: rotateRing 65s linear infinite;
+    }
+
+    .ring-middle {
+      width: 78%;
+      height: 78%;
+      border: 1.5px dashed rgba(0, 0, 0, 0.05);
+      animation: rotateRingRev 48s linear infinite;
+    }
+
+    .ring-inner {
+      width: 58%;
+      height: 58%;
+      border: 1.5px solid rgba(0, 0, 0, 0.03);
+      border-top-color: rgba(0, 0, 0, 0.16);
+      border-bottom-color: rgba(0, 0, 0, 0.07);
+      animation: rotateRing 28s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes rotateRing {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes rotateRingRev {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+
+    /* ========================================================
+       CÁPSULA DE VIDRIO FROSTED CLARO (APPLE / LUXURY MINIMAL)
+       ======================================================== */
+    .glass-capsule {
+      position: relative;
+      background: var(--surface-glass);
+      border: 1.5px solid var(--surface-border);
+      border-radius: clamp(32px, 4vw, 56px);
+      padding: clamp(3.2rem, 5.5vw, 6.5rem) clamp(4.5rem, 8vw, 10rem);
+      backdrop-filter: blur(36px) saturate(140%);
+      -webkit-backdrop-filter: blur(36px) saturate(140%);
+      box-shadow: 
+        0 25px 70px rgba(0, 0, 0, 0.06),
+        0 8px 24px rgba(0, 0, 0, 0.03),
+        0 1px 0 rgba(255, 255, 255, 0.9) inset,
+        0 0 0 1px rgba(0, 0, 0, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+      cursor: default;
+    }
+
+    .glass-capsule:hover {
+      border-color: rgba(255, 255, 255, 1);
+      box-shadow: 
+        0 35px 90px rgba(0, 0, 0, 0.09),
+        0 12px 30px rgba(0, 0, 0, 0.04),
+        0 1px 0 rgba(255, 255, 255, 1) inset,
+        0 0 0 1px rgba(0, 0, 0, 0.06);
+    }
+
+    /* ========================================================
+       TÍTULO: "Depurando . . ." (SHIMMER GRAFITO OSCURO)
+       ======================================================== */
+    .title-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
+    }
+
+    .title {
+      font-size: clamp(4.2rem, 8.8vw, 8.8rem);
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      display: inline-flex;
+      align-items: baseline;
+      white-space: nowrap;
+    }
+
+    /* Shimmer metálico en grafito profundo y carbón */
+    .word {
+      display: inline-flex;
+      background: linear-gradient(
+        110deg,
+        #0e0e11 0%,
+        #2d2d34 20%,
+        #71717a 38%,
+        #a1a1aa 50%,
+        #71717a 62%,
+        #2d2d34 80%,
+        #0e0e11 100%
+      );
+      background-size: 240% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: metallicShimmer 6.2s linear infinite;
+    }
+
+    @keyframes metallicShimmer {
+      0% { background-position: 100% 0; }
+      100% { background-position: -140% 0; }
+    }
+
+    /* Ondulación muy suave en las letras */
+    .char {
+      display: inline-block;
+      animation: charSway 3.8s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 0.08s);
+      transition: transform 0.25s ease;
+    }
+
+    @keyframes charSway {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(clamp(-3px, -0.4vw, -6px));
+      }
+    }
+
+    /* ========================================================
+       LOS 3 PUNTOS: ONDA SENOIDAL SUAVE EN GRAFITO Y ONIX
+       ======================================================== */
+    .dots-group {
+      display: inline-flex;
+      align-items: center;
+      gap: clamp(0.85rem, 1.4vw, 1.8rem);
+      margin-left: clamp(1.2rem, 2vw, 2.8rem);
+      position: relative;
+      top: -0.08em;
+    }
+
+    .fluid-dot {
+      width: clamp(14px, 1.6vw, 26px);
+      height: clamp(14px, 1.6vw, 26px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #52525b 0%, #27272a 45%, #0e0e11 100%);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      animation: smoothWave 1.65s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+      animation-delay: calc(var(--d) * 0.22s);
+      will-change: transform, opacity, box-shadow;
+    }
+
+    @keyframes smoothWave {
+      0%, 100% {
+        transform: translateY(0px) scale(0.86);
+        opacity: 0.35;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      50% {
+        transform: translateY(clamp(-8px, -1.2vw, -18px)) scale(1.16);
+        opacity: 1;
+        box-shadow: 
+          0 12px 24px rgba(0, 0, 0, 0.22),
+          0 4px 8px rgba(0, 0, 0, 0.12);
+      }
+    }
+
+    /* ========================================================
+       OPTIMIZACIONES RESPONSIVE
+       ======================================================== */
+    @media (max-width: 768px) {
+      .glass-capsule {
+        padding: 2.2rem 2.8rem;
+        border-radius: 24px;
+      }
+      .title {
+        font-size: clamp(2.8rem, 8vw, 4.5rem);
+      }
+      .dots-group {
+        gap: 0.6rem;
+        margin-left: 0.8rem;
+      }
+      .fluid-dot {
+        width: 10px;
+        height: 10px;
+      }
+    }
+
+    @media (min-width: 1920px) {
+      .glass-capsule {
+        padding: 5rem 9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Capas de fondo en modo claro -->
+  <div class="bg-gradient"></div>
+  <div class="bg-noise-grid"></div>
+  <div id="cursor-spotlight"></div>
+
+  <!-- Lienzo interactivo para micropartículas -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Escenario central -->
+  <main class="stage">
+    
+    <!-- Halo ambiental luminoso y anillos hairlines sutiles -->
+    <div class="central-glow"></div>
+    <div class="rings-container">
+      <div class="hairline-ring ring-outer"></div>
+      <div class="hairline-ring ring-middle"></div>
+      <div class="hairline-ring ring-inner"></div>
+    </div>
+
+    <!-- Cápsula de vidrio frosted claro -->
+    <div class="glass-capsule" id="card">
+      
+      <!-- Título: Depurando . . . -->
+      <div class="title-wrapper">
+        <h1 class="title" aria-label="Depurando . . .">
+          <span class="word">
+            <span class="char" style="--i:0">D</span>
+            <span class="char" style="--i:1">e</span>
+            <span class="char" style="--i:2">p</span>
+            <span class="char" style="--i:3">u</span>
+            <span class="char" style="--i:4">r</span>
+            <span class="char" style="--i:5">a</span>
+            <span class="char" style="--i:6">n</span>
+            <span class="char" style="--i:7">d</span>
+            <span class="char" style="--i:8">o</span>
+          </span>
+          <span class="dots-group" aria-label="...">
+            <span class="fluid-dot" style="--d:0"></span>
+            <span class="fluid-dot" style="--d:1"></span>
+            <span class="fluid-dot" style="--d:2"></span>
+          </span>
+        </h1>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========================================================
+       SCRIPTS: FÍSICA FLUIDA A 60/120 FPS
+       ======================================================== -->
+  <script>
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    const spotlight = document.getElementById('cursor-spotlight');
+
+    let width = 0;
+    let height = 0;
+    let dpr = window.devicePixelRatio || 1;
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Micropartículas en escala de grises suaves
+    class DustParticle {
+      constructor() {
+        this.reset(true);
+      }
+
+      reset(initial = false) {
+        this.x = Math.random() * width;
+        this.y = initial ? Math.random() * height : height + 20;
+        this.vx = (Math.random() - 0.5) * 0.35;
+        this.vy = -(Math.random() * 0.45 + 0.15);
+        this.size = Math.random() * 2.0 + 1.1;
+        this.alpha = Math.random() * 0.25 + 0.08;
+        this.baseAlpha = this.alpha;
+      }
+
+      update(mouse) {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (mouse.x !== null) {
+          const dx = this.x - mouse.x;
+          const dy = this.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const maxDist = 180;
+
+          if (dist < maxDist) {
+            const force = (1 - dist / maxDist) * 2.5;
+            const angle = Math.atan2(dy, dx);
+            this.x += Math.cos(angle) * force;
+            this.y += Math.sin(angle) * force;
+            this.alpha = Math.min(0.55, this.baseAlpha + (1 - dist / maxDist) * 0.35);
+          } else {
+            this.alpha += (this.baseAlpha - this.alpha) * 0.05;
+          }
+        }
+
+        if (this.y < -30 || this.x < -30 || this.x > width + 30) {
+          this.reset(false);
+        }
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(70, 75, 85, ${this.alpha})`;
+        ctx.fill();
+      }
+    }
+
+    // Ondas concéntricas sutiles al interactuar
+    class DropWave {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.r = 6;
+        this.maxR = 200;
+        this.alpha = 0.35;
+      }
+
+      update() {
+        this.r += 4.2;
+        this.alpha *= 0.94;
+      }
+
+      draw() {
+        if (this.alpha <= 0.01) return;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(30, 35, 45, ${this.alpha})`;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    const particles = Array.from({ length: 55 }, () => new DustParticle());
+    const waves = [];
+    const mouse = { x: null, y: null };
+    let spotlightX = width / 2;
+    let spotlightY = height / 2;
+
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      spotlight.style.opacity = '1';
+    });
+
+    window.addEventListener('mouseleave', () => {
+      mouse.x = null;
+      mouse.y = null;
+      spotlight.style.opacity = '0';
+    });
+
+    window.addEventListener('click', (e) => {
+      waves.push(new DropWave(e.clientX, e.clientY));
+    });
+
+    /* Parallax inercial de la tarjeta */
+    const card = document.getElementById('card');
+    let tiltX = 0, tiltY = 0;
+    let targetTiltX = 0, targetTiltY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const dx = (e.clientX - cx) / cx;
+      const dy = (e.clientY - cy) / cy;
+
+      targetTiltX = -dy * 5;
+      targetTiltY = dx * 5;
+    });
+
+    /* Bucle de renderizado */
+    function render() {
+      if (mouse.x !== null) {
+        const spotRadius = spotlight.offsetWidth / 2;
+        spotlightX += (mouse.x - spotlightX) * 0.1;
+        spotlightY += (mouse.y - spotlightY) * 0.1;
+        spotlight.style.transform = `translate(${spotlightX - spotRadius}px, ${spotlightY - spotRadius}px)`;
+      }
+
+      tiltX += (targetTiltX - tiltX) * 0.08;
+      tiltY += (targetTiltY - tiltY) * 0.08;
+      card.style.transform = `rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
+
+      ctx.clearRect(0, 0, width, height);
+
+      // Conexiones suaves entre partículas
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 110) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(60, 65, 75, ${(1 - dist / 110) * 0.035})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+
+      particles.forEach(p => {
+        p.update(mouse);
+        p.draw();
+      });
+
+      for (let i = waves.length - 1; i >= 0; i--) {
+        waves[i].update();
+        waves[i].draw();
+        if (waves[i].alpha <= 0.01) {
+          waves.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+  </script>
+</body>
+</html>
