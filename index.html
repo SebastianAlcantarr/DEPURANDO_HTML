@@ -41,8 +41,11 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
+      background-color: #f6f7fa;
       background-color: var(--bg);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Inter', Arial, sans-serif;
       font-family: var(--font-sans);
+      color: #0e0e11;
       color: var(--charcoal-900);
       display: flex;
       align-items: center;
@@ -52,7 +55,10 @@
     /* Fondo: Gradiente radial limpio y microcuadrícula sutil */
     .bg-gradient {
       position: absolute;
-      inset: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
       background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f4f5f8 55%, #eaecf1 100%);
       z-index: 1;
       pointer-events: none;
@@ -60,7 +66,10 @@
 
     .bg-noise-grid {
       position: absolute;
-      inset: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
       background-image: 
         radial-gradient(circle at center, rgba(0, 0, 0, 0.035) 1.5px, transparent 1.5px);
       background-size: 38px 38px;
@@ -76,6 +85,8 @@
       position: absolute;
       top: 0;
       left: 0;
+      width: 60vw;
+      height: 60vw;
       width: clamp(600px, 60vw, 1100px);
       height: clamp(600px, 60vw, 1100px);
       border-radius: 50%;
@@ -91,7 +102,10 @@
     /* Lienzo interactivo de micropartículas */
     #particle-canvas {
       position: absolute;
-      inset: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       z-index: 4;
@@ -115,11 +129,14 @@
     /* Halo luminoso orgánico blanco suave */
     .central-glow {
       position: absolute;
+      width: 65vw;
+      height: 65vw;
+      max-width: 1050px;
+      max-height: 1050px;
       width: clamp(550px, 65vw, 1050px);
       height: clamp(550px, 65vw, 1050px);
       border-radius: 50%;
       background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(230, 235, 245, 0.5) 45%, transparent 70%);
-      filter: blur(85px);
       animation: breatheGlow 7.5s ease-in-out infinite alternate;
       pointer-events: none;
       z-index: -1;
@@ -143,6 +160,10 @@
     /* Anillos hairline monocromáticos en tonos grafito tenue */
     .rings-container {
       position: absolute;
+      width: 75vw;
+      height: 75vw;
+      max-width: 1150px;
+      max-height: 1150px;
       width: clamp(560px, 75vw, 1150px);
       height: clamp(560px, 75vw, 1150px);
       display: flex;
@@ -196,9 +217,12 @@
        ======================================================== */
     .glass-capsule {
       position: relative;
+      background: rgba(255, 255, 255, 0.88);
       background: var(--surface-glass);
-      border: 1.5px solid var(--surface-border);
+      border: 1.5px solid rgba(255, 255, 255, 0.95);
+      border-radius: 4vw;
       border-radius: clamp(32px, 4vw, 56px);
+      padding: 5.5vw 8vw;
       padding: clamp(3.2rem, 5.5vw, 6.5rem) clamp(4.5rem, 8vw, 10rem);
       backdrop-filter: blur(36px) saturate(140%);
       -webkit-backdrop-filter: blur(36px) saturate(140%);
@@ -235,6 +259,7 @@
     }
 
     .title {
+      font-size: 8.8vw;
       font-size: clamp(4.2rem, 8.8vw, 8.8rem);
       font-weight: 600;
       letter-spacing: -0.035em;
@@ -246,6 +271,7 @@
     /* Shimmer metálico en grafito profundo y carbón */
     .word {
       display: inline-flex;
+      color: #2d2d34;
       background: linear-gradient(
         110deg,
         #0e0e11 0%,
@@ -280,7 +306,7 @@
         transform: translateY(0px);
       }
       50% {
-        transform: translateY(clamp(-3px, -0.4vw, -6px));
+        transform: translateY(-4px);
       }
     }
 
@@ -290,22 +316,44 @@
     .dots-group {
       display: inline-flex;
       align-items: center;
-      gap: clamp(0.85rem, 1.4vw, 1.8rem);
+      margin-left: 2vw;
       margin-left: clamp(1.2rem, 2vw, 2.8rem);
       position: relative;
       top: -0.08em;
     }
 
     .fluid-dot {
-      width: clamp(14px, 1.6vw, 26px);
-      height: clamp(14px, 1.6vw, 26px);
+      width: 1.6vw;
+      height: 1.6vw;
+      min-width: 14px;
+      min-height: 14px;
+      max-width: 26px;
+      max-height: 26px;
+      margin-right: 1.4vw;
       border-radius: 50%;
       background: radial-gradient(circle at 35% 35%, #52525b 0%, #27272a 45%, #0e0e11 100%);
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
       animation: smoothWave 1.65s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
       animation-delay: calc(var(--d) * 0.22s);
-      will-change: transform, opacity, box-shadow;
+      will-change: transform, opacity;
     }
+
+    .fluid-dot:last-child { margin-right: 0; }
+
+    /* Retardos sin variables CSS (navegadores antiguos de TV) */
+    .char:nth-child(1) { animation-delay: 0s; }
+    .char:nth-child(2) { animation-delay: 0.08s; }
+    .char:nth-child(3) { animation-delay: 0.16s; }
+    .char:nth-child(4) { animation-delay: 0.24s; }
+    .char:nth-child(5) { animation-delay: 0.32s; }
+    .char:nth-child(6) { animation-delay: 0.4s; }
+    .char:nth-child(7) { animation-delay: 0.48s; }
+    .char:nth-child(8) { animation-delay: 0.56s; }
+    .char:nth-child(9) { animation-delay: 0.64s; }
+    .fluid-dot:nth-child(1) { animation-delay: 0s; }
+    .fluid-dot:nth-child(2) { animation-delay: 0.22s; }
+    .fluid-dot:nth-child(3) { animation-delay: 0.44s; }
+
 
     @keyframes smoothWave {
       0%, 100% {
@@ -314,7 +362,7 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
       50% {
-        transform: translateY(clamp(-8px, -1.2vw, -18px)) scale(1.16);
+        transform: translateY(-14px) scale(1.16);
         opacity: 1;
         box-shadow: 
           0 12px 24px rgba(0, 0, 0, 0.22),
@@ -334,12 +382,14 @@
         font-size: clamp(2.8rem, 8vw, 4.5rem);
       }
       .dots-group {
-        gap: 0.6rem;
         margin-left: 0.8rem;
       }
       .fluid-dot {
         width: 10px;
         height: 10px;
+        min-width: 0;
+        min-height: 0;
+        margin-right: 0.6rem;
       }
     }
 
@@ -347,6 +397,15 @@
       .glass-capsule {
         padding: 5rem 9rem;
       }
+      .title {
+        font-size: 9rem;
+        font-size: clamp(4.2rem, 8.8vw, 11rem);
+      }
+    }
+
+    /* Sin backdrop-filter (TV): tarjeta más opaca para mantener contraste */
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .glass-capsule { background: rgba(255, 255, 255, 0.92); }
     }
   </style>
 </head>
@@ -403,31 +462,32 @@
        SCRIPTS: FÍSICA FLUIDA A 60/120 FPS
        ======================================================== -->
   <script>
-    const canvas = document.getElementById('particle-canvas');
-    const ctx = canvas.getContext('2d');
-    const spotlight = document.getElementById('cursor-spotlight');
+    (function () {
+      var canvas = document.getElementById('particle-canvas');
+      var ctx = canvas.getContext('2d');
+      var spotlight = document.getElementById('cursor-spotlight');
+      var card = document.getElementById('card');
 
-    let width = 0;
-    let height = 0;
-    let dpr = window.devicePixelRatio || 1;
+      var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame ||
+        function (cb) { return setTimeout(cb, 33); };
 
-    function resize() {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      ctx.scale(dpr, dpr);
-    }
-    resize();
-    window.addEventListener('resize', resize);
+      var width = 0;
+      var height = 0;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    // Micropartículas en escala de grises suaves
-    class DustParticle {
-      constructor() {
-        this.reset(true);
+      function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
+      resize();
+      window.addEventListener('resize', resize);
 
-      reset(initial = false) {
+      // Micropartículas en escala de grises suaves
+      function DustParticle() { this.reset(true); }
+      DustParticle.prototype.reset = function (initial) {
         this.x = Math.random() * width;
         this.y = initial ? Math.random() * height : height + 20;
         this.vx = (Math.random() - 0.5) * 0.35;
@@ -435,21 +495,18 @@
         this.size = Math.random() * 2.0 + 1.1;
         this.alpha = Math.random() * 0.25 + 0.08;
         this.baseAlpha = this.alpha;
-      }
-
-      update(mouse) {
+      };
+      DustParticle.prototype.update = function (mouse) {
         this.x += this.vx;
         this.y += this.vy;
-
         if (mouse.x !== null) {
-          const dx = this.x - mouse.x;
-          const dy = this.y - mouse.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const maxDist = 180;
-
+          var dx = this.x - mouse.x;
+          var dy = this.y - mouse.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          var maxDist = 180;
           if (dist < maxDist) {
-            const force = (1 - dist / maxDist) * 2.5;
-            const angle = Math.atan2(dy, dx);
+            var force = (1 - dist / maxDist) * 2.5;
+            var angle = Math.atan2(dy, dx);
             this.x += Math.cos(angle) * force;
             this.y += Math.sin(angle) * force;
             this.alpha = Math.min(0.55, this.baseAlpha + (1 - dist / maxDist) * 0.35);
@@ -457,132 +514,127 @@
             this.alpha += (this.baseAlpha - this.alpha) * 0.05;
           }
         }
-
         if (this.y < -30 || this.x < -30 || this.x > width + 30) {
           this.reset(false);
         }
-      }
-
-      draw() {
+      };
+      DustParticle.prototype.draw = function () {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(70, 75, 85, ${this.alpha})`;
+        ctx.fillStyle = 'rgba(70, 75, 85, ' + this.alpha + ')';
         ctx.fill();
-      }
-    }
+      };
 
-    // Ondas concéntricas sutiles al interactuar
-    class DropWave {
-      constructor(x, y) {
+      // Ondas concéntricas sutiles al interactuar
+      function DropWave(x, y) {
         this.x = x;
         this.y = y;
         this.r = 6;
-        this.maxR = 200;
         this.alpha = 0.35;
       }
-
-      update() {
+      DropWave.prototype.update = function () {
         this.r += 4.2;
         this.alpha *= 0.94;
-      }
-
-      draw() {
+      };
+      DropWave.prototype.draw = function () {
         if (this.alpha <= 0.01) return;
-        ctx.save();
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(30, 35, 45, ${this.alpha})`;
+        ctx.strokeStyle = 'rgba(30, 35, 45, ' + this.alpha + ')';
         ctx.lineWidth = 1.2;
         ctx.stroke();
-        ctx.restore();
-      }
-    }
+      };
 
-    const particles = Array.from({ length: 55 }, () => new DustParticle());
-    const waves = [];
-    const mouse = { x: null, y: null };
-    let spotlightX = width / 2;
-    let spotlightY = height / 2;
+      // Menos partículas: las TV tienen CPU/GPU modestas
+      var particles = [];
+      for (var n = 0; n < 40; n++) particles.push(new DustParticle());
+      var waves = [];
+      var mouse = { x: null, y: null };
+      var spotlightX = width / 2;
+      var spotlightY = height / 2;
+      var tiltX = 0, tiltY = 0, targetTiltX = 0, targetTiltY = 0;
 
-    window.addEventListener('mousemove', (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-      spotlight.style.opacity = '1';
-    });
+      window.addEventListener('mousemove', function (e) {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        spotlight.style.opacity = '1';
 
-    window.addEventListener('mouseleave', () => {
-      mouse.x = null;
-      mouse.y = null;
-      spotlight.style.opacity = '0';
-    });
-
-    window.addEventListener('click', (e) => {
-      waves.push(new DropWave(e.clientX, e.clientY));
-    });
-
-    /* Parallax inercial de la tarjeta */
-    const card = document.getElementById('card');
-    let tiltX = 0, tiltY = 0;
-    let targetTiltX = 0, targetTiltY = 0;
-
-    window.addEventListener('mousemove', (e) => {
-      const cx = window.innerWidth / 2;
-      const cy = window.innerHeight / 2;
-      const dx = (e.clientX - cx) / cx;
-      const dy = (e.clientY - cy) / cy;
-
-      targetTiltX = -dy * 5;
-      targetTiltY = dx * 5;
-    });
-
-    /* Bucle de renderizado */
-    function render() {
-      if (mouse.x !== null) {
-        const spotRadius = spotlight.offsetWidth / 2;
-        spotlightX += (mouse.x - spotlightX) * 0.1;
-        spotlightY += (mouse.y - spotlightY) * 0.1;
-        spotlight.style.transform = `translate(${spotlightX - spotRadius}px, ${spotlightY - spotRadius}px)`;
-      }
-
-      tiltX += (targetTiltX - tiltX) * 0.08;
-      tiltY += (targetTiltY - tiltY) * 0.08;
-      card.style.transform = `rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
-
-      ctx.clearRect(0, 0, width, height);
-
-      // Conexiones suaves entre partículas
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 110) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(60, 65, 75, ${(1 - dist / 110) * 0.035})`;
-            ctx.lineWidth = 0.6;
-            ctx.stroke();
-          }
-        }
-      }
-
-      particles.forEach(p => {
-        p.update(mouse);
-        p.draw();
+        var cx = window.innerWidth / 2;
+        var cy = window.innerHeight / 2;
+        targetTiltX = -((e.clientY - cy) / cy) * 5;
+        targetTiltY = ((e.clientX - cx) / cx) * 5;
       });
 
-      for (let i = waves.length - 1; i >= 0; i--) {
-        waves[i].update();
-        waves[i].draw();
-        if (waves[i].alpha <= 0.01) {
-          waves.splice(i, 1);
-        }
-      }
+      window.addEventListener('mouseout', function (e) {
+        if (e.relatedTarget) return;
+        mouse.x = null;
+        mouse.y = null;
+        spotlight.style.opacity = '0';
+      });
 
-      requestAnimationFrame(render);
-    }
-    requestAnimationFrame(render);
+      window.addEventListener('click', function (e) {
+        waves.push(new DropWave(e.clientX, e.clientY));
+      });
+
+      // Control remoto (OK/Enter/espacio): onda en el centro de la pantalla
+      window.addEventListener('keydown', function (e) {
+        var k = e.keyCode;
+        if (k === 13 || k === 32) {
+          waves.push(new DropWave(window.innerWidth / 2, window.innerHeight / 2));
+        }
+      });
+
+      function render() {
+        if (mouse.x !== null) {
+          var spotRadius = spotlight.offsetWidth / 2;
+          spotlightX += (mouse.x - spotlightX) * 0.1;
+          spotlightY += (mouse.y - spotlightY) * 0.1;
+          spotlight.style.webkitTransform = spotlight.style.transform =
+            'translate(' + (spotlightX - spotRadius) + 'px, ' + (spotlightY - spotRadius) + 'px)';
+        }
+
+        // Parallax de la tarjeta (solo si hay movimiento de puntero)
+        if (Math.abs(targetTiltX - tiltX) > 0.01 || Math.abs(targetTiltY - tiltY) > 0.01) {
+          tiltX += (targetTiltX - tiltX) * 0.08;
+          tiltY += (targetTiltY - tiltY) * 0.08;
+          card.style.webkitTransform = card.style.transform =
+            'rotateX(' + tiltX.toFixed(2) + 'deg) rotateY(' + tiltY.toFixed(2) + 'deg)';
+        }
+
+        ctx.clearRect(0, 0, width, height);
+
+        // Conexiones suaves entre partículas
+        for (var i = 0; i < particles.length; i++) {
+          for (var j = i + 1; j < particles.length; j++) {
+            var dx = particles[i].x - particles[j].x;
+            var dy = particles[i].y - particles[j].y;
+            var dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 110) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = 'rgba(60, 65, 75, ' + ((1 - dist / 110) * 0.035) + ')';
+              ctx.lineWidth = 0.6;
+              ctx.stroke();
+            }
+          }
+        }
+
+        for (var p = 0; p < particles.length; p++) {
+          particles[p].update(mouse);
+          particles[p].draw();
+        }
+
+        for (var w = waves.length - 1; w >= 0; w--) {
+          waves[w].update();
+          waves[w].draw();
+          if (waves[w].alpha <= 0.01) waves.splice(w, 1);
+        }
+
+        raf(render);
+      }
+      raf(render);
+    })();
   </script>
 </body>
 </html>
